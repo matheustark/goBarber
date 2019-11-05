@@ -57,6 +57,17 @@ class AppointmetController {
         .status(401)
         .json({ error: 'You can only create appointment with providers' });
     }
+    /*
+     * Check same person
+     */
+
+    const user = await User.findByPk(req.userId);
+
+    if (provider_id === req.userId) {
+      return res
+        .status(401)
+        .json({ error: 'You cant create appointment with another provider' });
+    }
 
     const hourStart = startOfHour(parseISO(date));
 
@@ -96,7 +107,6 @@ class AppointmetController {
      * Notify appointment provider
      */
 
-    const user = await User.findByPk(req.userId);
     const formattedDate = format(
       hourStart,
       "'dia' dd 'de' MMMM', ás' H:mm'h'",
